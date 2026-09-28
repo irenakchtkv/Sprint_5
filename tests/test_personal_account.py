@@ -2,41 +2,14 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 
 import locators
-from generator import email_generation
-from generator import valid_password_generator
+import constants
 
 
-def test_personal_account_transition_to_profile_section_successful(driver):
+class TestPersonalAccount:
 
-    driver.get('https://stellarburgers.education-services.ru')
-    WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located(locators.LOGIN_TO_ACCOUNT_BUTTON))
+    def test_personal_account_transition_to_profile_section_successful(self, authorize_user):
         
-    driver.find_element(*locators.LOGIN_TO_ACCOUNT_BUTTON).click()
-    driver.find_element(*locators.REGISTER_LINK).click()
-        
-    driver.find_element(*locators.NAME_INPUT_REG).send_keys('Michael')
-    email = email_generation('eja', 'cat')
-    driver.find_element(*locators.EMAIL_INPUT_REG).send_keys(email)
-    password = valid_password_generator()
-    driver.find_element(*locators.PASSWORD_INPUT_REG).send_keys(password)
-    driver.find_element(*locators.REGISTER_BUTTON).click()
-        
-    WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located(locators.LOGIN_TITLE))
+        authorize_user.find_element(*locators.PERSONAL_ACCOUNT_BUTTON).click()
 
-    driver.get('https://stellarburgers.education-services.ru')
-    WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located(locators.LOGIN_TO_ACCOUNT_BUTTON))
-    
-    driver.find_element(*locators.LOGIN_TO_ACCOUNT_BUTTON).click()
-    driver.find_element(*locators.EMAIL_INPUT_AUTH).send_keys(email)
-    driver.find_element(*locators.PASSWORD_INPUT_AUTH).send_keys(password)
-    driver.find_element(*locators.LOGIN_BUTTON).click()
-    
-    WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located(locators.PLACE_AN_ORDER_BUTTON))
-    
-    driver.find_element(*locators.PERSONAL_ACCOUNT_BUTTON).click()
-    WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located(locators.PROFILE_SECTION))
-
-    assert '/account/profile' in driver.current_url
-    assert driver.find_element(*locators.PROFILE_SECTION).text == 'Профиль'
-
-    driver.quit()
+        assert WebDriverWait(authorize_user, 3).until(expected_conditions.url_contains(constants.USER_PROFILE_PATH))
+        assert WebDriverWait(authorize_user, 3).until(expected_conditions.visibility_of_element_located(locators.PROFILE_SECTION))

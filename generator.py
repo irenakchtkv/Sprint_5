@@ -3,7 +3,7 @@ from random import randint
 
 def email_generation(name, surname):
 
-    num = randint(100, 999)
+    num = randint(10000, 99999)
     email = f"{name}-{surname}{num}@gmail.com"
     return email
 
